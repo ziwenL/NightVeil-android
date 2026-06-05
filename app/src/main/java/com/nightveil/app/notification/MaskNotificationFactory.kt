@@ -19,7 +19,7 @@ object MaskNotificationFactory {
     const val REQUEST_DECREASE = 201
     const val REQUEST_INCREASE = 202
     const val REQUEST_STOP = 203
-    const val REQUEST_OPEN_APP = 204
+    private const val REQUEST_OPEN_APP = 204
 
     val notificationActions = listOf(
         MaskServiceAction.DECREASE.action,
@@ -46,11 +46,6 @@ object MaskNotificationFactory {
                 0,
                 context.getString(R.string.notification_increase),
                 actionPendingIntent(context, MaskServiceAction.INCREASE, REQUEST_INCREASE)
-            )
-            .addAction(
-                0,
-                context.getString(R.string.notification_open_app),
-                openAppPendingIntent(context)
             )
             .addAction(
                 0,

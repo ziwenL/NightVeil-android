@@ -1,6 +1,10 @@
 ﻿package com.nightveil.app
 
 import android.Manifest
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
@@ -18,6 +22,7 @@ import androidx.core.view.updatePadding
 import com.nightveil.app.data.MaskPreferences
 import com.nightveil.app.databinding.ActivityMainBinding
 import com.nightveil.app.model.MaskHomeUiModel
+import com.nightveil.app.model.MaskOverlayStateSignal
 import com.nightveil.app.model.MaskNotificationPermissionModel
 import com.nightveil.app.model.MaskOverlayModel
 import com.nightveil.app.model.MaskServiceAction
@@ -30,6 +35,14 @@ class MainActivity : ComponentActivity() {
     private lateinit var preferences: MaskPreferences
     private lateinit var basePadding: EdgeToEdgeInsetsHelper.PaddingState
     private var pendingStartAfterNotificationPermission = false
+    private var overlayStateReceiverRegistered = false
+    private val overlayStateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == MaskOverlayStateSignal.ACTION_STATE_CHANGED) {
+                refreshUi()
+            }
+        }
+    }
 
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -76,6 +89,17 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         refreshUi()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        registerOverlayStateReceiver()
+        refreshUi()
+    }
+
+    override fun onStop() {
+        unregisterOverlayStateReceiver()
+        super.onStop()
     }
 
     private fun setupPrimaryButton() {
@@ -272,6 +296,25 @@ class MainActivity : ComponentActivity() {
         } else {
             true
         }
+    }
+
+    private fun registerOverlayStateReceiver() {
+        if (overlayStateReceiverRegistered) return
+
+        val filter = IntentFilter(MaskOverlayStateSignal.ACTION_STATE_CHANGED)
+        if (Build.VERSION.SDK_INT >= 33) {
+            registerReceiver(overlayStateReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            @Suppress("DEPRECATION")
+            registerReceiver(overlayStateReceiver, filter)
+        }
+        overlayStateReceiverRegistered = true
+    }
+
+    private fun unregisterOverlayStateReceiver() {
+        if (!overlayStateReceiverRegistered) return
+        unregisterReceiver(overlayStateReceiver)
+        overlayStateReceiverRegistered = false
     }
 
     private fun Insets.toState(): EdgeToEdgeInsetsHelper.InsetsState {

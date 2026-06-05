@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import com.nightveil.app.data.MaskPreferences
 import com.nightveil.app.databinding.WidgetMaskViewBinding
+import com.nightveil.app.model.MaskOverlayStateSignal
 import com.nightveil.app.model.MaskForegroundServiceSpec
 import com.nightveil.app.model.MaskOverlayModel
 import com.nightveil.app.model.MaskServiceAction
@@ -69,6 +70,8 @@ class FloatingService : Service() {
 
     private fun startOverlay(opacity: Int) {
         if (!FloatingWindowHelper.canDrawOverlays(this)) {
+            preferences.isRunning = false
+            broadcastStateChanged()
             stopSelf()
             return
         }
@@ -90,6 +93,7 @@ class FloatingService : Service() {
                 notification
             )
         }
+        broadcastStateChanged()
         overlayController.show(safeOpacity)
     }
 
@@ -98,6 +102,7 @@ class FloatingService : Service() {
         preferences.lastOpacity = safeOpacity
         preferences.isRunning = true
         overlayController.updateOpacity(safeOpacity)
+        broadcastStateChanged()
         val notificationManager = ContextCompat.getSystemService(
             this,
             NotificationManager::class.java
@@ -110,6 +115,7 @@ class FloatingService : Service() {
 
     private fun stopOverlay() {
         preferences.isRunning = false
+        broadcastStateChanged()
         overlayController.hide {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 stopForeground(STOP_FOREGROUND_REMOVE)
@@ -119,6 +125,10 @@ class FloatingService : Service() {
             }
             stopSelf()
         }
+    }
+
+    private fun broadcastStateChanged() {
+        sendBroadcast(MaskOverlayStateSignal.intent(packageName))
     }
 
     companion object {

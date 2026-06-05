@@ -10,7 +10,6 @@ class MaskNotificationFactoryTest {
         assertEquals(201, MaskNotificationFactory.REQUEST_DECREASE)
         assertEquals(202, MaskNotificationFactory.REQUEST_INCREASE)
         assertEquals(203, MaskNotificationFactory.REQUEST_STOP)
-        assertEquals(204, MaskNotificationFactory.REQUEST_OPEN_APP)
     }
 
     @Test
@@ -18,6 +17,7 @@ class MaskNotificationFactoryTest {
         assertEquals(MaskServiceAction.DECREASE.action, MaskNotificationFactory.notificationActions[0])
         assertEquals(MaskServiceAction.INCREASE.action, MaskNotificationFactory.notificationActions[1])
         assertEquals(MaskServiceAction.STOP.action, MaskNotificationFactory.notificationActions[2])
+        assertEquals(3, MaskNotificationFactory.notificationActions.size)
     }
 }
 
