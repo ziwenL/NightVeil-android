@@ -17,7 +17,7 @@
     <string name="preset_50">50%</string>
     <string name="preset_65">65%</string>
     <string name="preset_80">80%</string>
-    <string name="tips_text">Tip: once Night Veil is running, you can raise, lower, or stop it right from the notification shade.</string>
+    <string name="tips_text">Tip:\nonce Night Veil is running, you can raise, lower, or stop it right from the notification shade.</string>
     <string name="toast_overlay_started">Night Veil is on</string>
     <string name="toast_overlay_stopped">Night Veil is off</string>
     <string name="toast_permission_required">Please allow overlay permission first</string>
