@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scroll_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_app_gradient"
+    android:clipToPadding="false"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:id="@+id/content_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/home_title"
+            android:textColor="@color/mask_text_primary"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/home_subtitle"
+            android:textColor="@color/mask_text_secondary"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:id="@+id/card_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_surface_panel"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tv_overlay_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/overlay_stopped"
+                android:textColor="@color/mask_success"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_opacity_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/preset_50"
+                android:textColor="@color/mask_text_primary"
+                android:textSize="40sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_opacity_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/opacity_label"
+                android:textColor="@color/mask_text_secondary"
+                android:textSize="14sp" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/sb_transparency"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:value="50"
+                android:valueFrom="20"
+                android:valueTo="90"
+                app:haloColor="@color/mask_primary"
+                app:thumbColor="@color/white"
+                app:trackColorActive="@color/mask_primary"
+                app:trackColorInactive="@color/mask_panel_border" />
+
+            <LinearLayout
+                android:id="@+id/layout_presets"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/chip_preset_30"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_chip_default"
+                    android:gravity="center"
+                    android:text="@string/preset_30"
+                    android:textColor="@color/mask_text_primary"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip_preset_50"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_chip_default"
+                    android:gravity="center"
+                    android:text="@string/preset_50"
+                    android:textColor="@color/mask_text_primary"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip_preset_65"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_chip_default"
+                    android:gravity="center"
+                    android:text="@string/preset_65"
+                    android:textColor="@color/mask_text_primary"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chip_preset_80"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_chip_default"
+                    android:gravity="center"
+                    android:text="@string/preset_80"
+                    android:textColor="@color/mask_text_primary"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_show"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_primary_button"
+                android:text="@string/start_overlay"
+                android:textAllCaps="false"
+                android:textColor="@color/mask_bg_start" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/card_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_surface_panel"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tv_permission_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/permission_missing"
+                android:textColor="@color/mask_text_primary"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_notification_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/notification_ready"
+                android:textColor="@color/mask_text_secondary"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_last_used"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/last_used_label"
+                android:textColor="@color/mask_text_secondary"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_tips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/tips_text"
+                android:textColor="@color/mask_warning"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

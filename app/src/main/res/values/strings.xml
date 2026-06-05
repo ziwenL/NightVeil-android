@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Night Veil</string>
+    <string name="home_title">Night Veil</string>
+    <string name="home_subtitle">A night-friendly screen dimming veil you can keep adjusting from the notification shade.</string>
+    <string name="overlay_running">Veil is on</string>
+    <string name="overlay_stopped">Veil is off</string>
+    <string name="permission_ready">Overlay permission granted</string>
+    <string name="permission_missing">Overlay permission is required before starting</string>
+    <string name="notification_ready">Notification controls are enabled</string>
+    <string name="notification_missing">Notification permission is off, so quick controls may be unavailable</string>
+    <string name="opacity_label">Veil intensity</string>
+    <string name="last_used_label">Last used</string>
+    <string name="start_overlay">Turn on Night Veil</string>
+    <string name="grant_and_start">Allow permission to start</string>
+    <string name="stop_overlay">Turn off Night Veil</string>
+    <string name="preset_30">30%</string>
+    <string name="preset_50">50%</string>
+    <string name="preset_65">65%</string>
+    <string name="preset_80">80%</string>
+    <string name="tips_text">Tip: once Night Veil is running, you can raise, lower, or stop it right from the notification shade.</string>
+    <string name="toast_overlay_started">Night Veil is on</string>
+    <string name="toast_overlay_stopped">Night Veil is off</string>
+    <string name="toast_permission_required">Please allow overlay permission first</string>
+    <string name="toast_notification_permission_denied">Notification permission is off. Night Veil will still start, but quick controls may be unavailable</string>
+    <string name="toast_overlay_updated">Veil intensity updated to %1$d%%</string>
+    <string name="opacity_value">%1$d%%</string>
+    <string name="last_used_value">Intensity %1$d%%</string>
+    <string name="state_running_value">Running</string>
+    <string name="state_stopped_value">Off</string>
+    <string name="notification_channel_name">Night Veil</string>
+    <string name="notification_title">Night Veil is running</string>
+    <string name="notification_decrease">Lower</string>
+    <string name="notification_increase">Raise</string>
+    <string name="notification_open_app">Open app</string>
+    <string name="notification_close">Stop</string>
+    <string name="notification_preview_opacity">Intensity 40%</string>
+</resources>
