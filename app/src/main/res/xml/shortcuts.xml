@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_start"
+        android:shortcutDisabledMessage="@string/shortcut_start_short_label"
+        android:shortcutId="start_night_veil"
+        android:shortcutLongLabel="@string/shortcut_start_long_label"
+        android:shortcutShortLabel="@string/shortcut_start_short_label">
+        <intent
+            android:action="com.nightveil.app.shortcut.START"
+            android:targetClass="com.nightveil.app.ShortcutProxyActivity"
+            android:targetPackage="com.nightveil.app" />
+    </shortcut>
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_stop"
+        android:shortcutDisabledMessage="@string/shortcut_stop_short_label"
+        android:shortcutId="stop_night_veil"
+        android:shortcutLongLabel="@string/shortcut_stop_long_label"
+        android:shortcutShortLabel="@string/shortcut_stop_short_label">
+        <intent
+            android:action="com.nightveil.app.shortcut.STOP"
+            android:targetClass="com.nightveil.app.ShortcutProxyActivity"
+            android:targetPackage="com.nightveil.app" />
+    </shortcut>
+</shortcuts>

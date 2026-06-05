@@ -34,4 +34,8 @@
     <string name="notification_open_app">Open app</string>
     <string name="notification_close">Stop</string>
     <string name="notification_preview_opacity">Intensity 40%</string>
+    <string name="shortcut_start_short_label">Enable</string>
+    <string name="shortcut_start_long_label">Enable</string>
+    <string name="shortcut_stop_short_label">Disable</string>
+    <string name="shortcut_stop_long_label">Disable</string>
 </resources>
