@@ -1,0 +1,3 @@
+[submodule ".ai/ai-engineering-skills"]
+	path = .ai/ai-engineering-skills
+	url = https://github.com/ziwenL/ai-engineering-skills.git
