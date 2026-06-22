@@ -1,6 +1,7 @@
 ﻿package com.nightveil.app
 
 import android.Manifest
+import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -25,6 +26,7 @@ import com.nightveil.app.model.MaskHomeUiModel
 import com.nightveil.app.model.MaskOverlayStateSignal
 import com.nightveil.app.model.MaskNotificationPermissionModel
 import com.nightveil.app.model.MaskOverlayModel
+import com.nightveil.app.model.MaskOverlayRuntimeStateModel
 import com.nightveil.app.model.MaskServiceAction
 import com.nightveil.app.utils.EdgeToEdgeInsetsHelper
 import com.nightveil.app.utils.FloatingWindowHelper
@@ -71,6 +73,7 @@ class MainActivity : ComponentActivity() {
         configureEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         preferences = MaskPreferences(this)
+        synchronizePersistedRunningState()
         setContentView(binding.root)
 
         basePadding = EdgeToEdgeInsetsHelper.PaddingState(
@@ -93,6 +96,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
+        synchronizePersistedRunningState()
         registerOverlayStateReceiver()
         refreshUi()
     }
@@ -216,6 +220,16 @@ class MainActivity : ComponentActivity() {
         renderHomeState(homeState)
     }
 
+    private fun synchronizePersistedRunningState() {
+        if (MaskOverlayRuntimeStateModel.shouldResetPersistedRunningState(
+                persistedIsRunning = preferences.isRunning,
+                serviceIsRunning = isFloatingServiceRunning()
+            )
+        ) {
+            preferences.isRunning = false
+        }
+    }
+
     private fun renderHomeState(state: MaskHomeUiModel.State) {
         when (state.overlayState) {
             MaskHomeUiModel.OverlayState.RUNNING -> {
@@ -285,6 +299,15 @@ class MainActivity : ComponentActivity() {
         refreshUi()
         startMaskService(MaskServiceAction.START, preferences.lastOpacity)
         toast(R.string.toast_overlay_started)
+    }
+
+    private fun isFloatingServiceRunning(): Boolean {
+        val activityManager = ContextCompat.getSystemService(this, ActivityManager::class.java)
+            ?: return false
+
+        @Suppress("DEPRECATION")
+        return activityManager.getRunningServices(Int.MAX_VALUE)
+            .any { it.service.className == FloatingService::class.java.name }
     }
 
     private fun isNotificationPermissionGranted(): Boolean {

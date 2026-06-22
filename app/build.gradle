@@ -1,7 +1,28 @@
+import java.util.Properties
+
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
 }
+
+def signingProperties = new Properties()
+[rootProject.file('gradle.properties'), rootProject.file('local.properties')].each { file ->
+    if (file.exists()) {
+        file.withInputStream { stream ->
+            signingProperties.load(stream)
+        }
+    }
+}
+
+def releaseStoreFilePath = signingProperties.getProperty(
+    'nightveil.signing.storeFile',
+    'app/nightveil.keystore'
+)
+def hasReleaseSigning = [
+    'nightveil.signing.storePassword',
+    'nightveil.signing.keyAlias',
+    'nightveil.signing.keyPassword'
+].every { signingProperties.getProperty(it) }
 
 android {
     namespace 'com.nightveil.app'
@@ -20,10 +41,29 @@ android {
         }
     }
 
+    signingConfigs {
+        NightVeilRelease {
+            if (hasReleaseSigning) {
+                storeFile rootProject.file(releaseStoreFilePath)
+                storePassword signingProperties.getProperty('nightveil.signing.storePassword')
+                keyAlias signingProperties.getProperty('nightveil.signing.keyAlias')
+                keyPassword signingProperties.getProperty('nightveil.signing.keyPassword')
+            }
+        }
+    }
+
     buildTypes {
         release {
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.NightVeilRelease
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.NightVeilRelease
+            }
         }
     }
     compileOptions {
