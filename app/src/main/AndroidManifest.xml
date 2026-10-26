@@ -30,6 +30,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ShortcutProxyActivity"
@@ -44,6 +48,18 @@
             android:excludeFromRecents="true"
             android:taskAffinity=""
             android:theme="@style/Theme.NightVeil.BrightnessPanel" />
+        <service
+            android:name=".tile.MaskTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_tile_veil"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+            <meta-data android:name="android.service.quicksettings.TOGGLEABLE_TILE" android:value="true" />
+        </service>
+        <receiver android:name=".timer.SleepTimerReceiver" android:exported="false" />
         <service
             android:name=".FloatingService"
             android:exported="false"

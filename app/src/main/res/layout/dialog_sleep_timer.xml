@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="24dp"
+    android:paddingBottom="8dp">
+    <androidx.appcompat.widget.AppCompatImageView
+      android:layout_width="28dp"
+      android:layout_height="28dp"
+      android:src="@drawable/ic_clock"
+      app:tint="@color/mask_primary"
+      android:importantForAccessibility="no" />
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="14dp"
+      android:text="@string/timer_title"
+      android:textColor="@color/mask_text_primary"
+      android:textSize="23sp"
+      android:fontFamily="sans-serif-medium" />
+    <TextView
+      android:id="@+id/tv_timer_hint"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:layout_marginBottom="20dp"
+      android:textColor="@color/mask_text_secondary"
+      android:textSize="13sp"
+      android:lineSpacingExtra="3dp" />
+    <com.google.android.material.button.MaterialButton
+      android:id="@+id/option_off"
+      style="@style/Widget.NightVeil.SecondaryButton"
+      android:layout_width="match_parent"
+      android:layout_height="52dp"
+      android:layout_marginBottom="8dp"
+      android:text="@string/timer_unlimited"
+      android:gravity="start|center_vertical"
+      android:paddingStart="18dp"
+      android:paddingEnd="18dp"
+      android:checkable="true" />
+    <com.google.android.material.button.MaterialButton
+      android:id="@+id/option_15"
+      style="@style/Widget.NightVeil.SecondaryButton"
+      android:layout_width="match_parent"
+      android:layout_height="52dp"
+      android:layout_marginBottom="8dp"
+      android:text="@string/timer_15"
+      android:gravity="start|center_vertical"
+      android:paddingStart="18dp"
+      android:paddingEnd="18dp"
+      android:checkable="true" />
+    <com.google.android.material.button.MaterialButton
+      android:id="@+id/option_30"
+      style="@style/Widget.NightVeil.SecondaryButton"
+      android:layout_width="match_parent"
+      android:layout_height="52dp"
+      android:layout_marginBottom="8dp"
+      android:text="@string/timer_30"
+      android:gravity="start|center_vertical"
+      android:paddingStart="18dp"
+      android:paddingEnd="18dp"
+      android:checkable="true" />
+    <com.google.android.material.button.MaterialButton
+      android:id="@+id/option_60"
+      style="@style/Widget.NightVeil.SecondaryButton"
+      android:layout_width="match_parent"
+      android:layout_height="52dp"
+      android:layout_marginBottom="8dp"
+      android:text="@string/timer_60"
+      android:gravity="start|center_vertical"
+      android:paddingStart="18dp"
+      android:paddingEnd="18dp"
+      android:checkable="true" />
+  </LinearLayout>
+</androidx.core.widget.NestedScrollView>

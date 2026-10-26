@@ -10,6 +10,15 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
+import android.content.ComponentName
+import android.app.StatusBarManager
+import android.graphics.drawable.Icon
+import com.nightveil.app.timer.SleepTimerUi
+import com.nightveil.app.tile.MaskTileService
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -38,6 +47,13 @@ class MainActivity : ComponentActivity() {
     private lateinit var basePadding: EdgeToEdgeInsetsHelper.PaddingState
     private var pendingStartAfterNotificationPermission = false
     private var overlayStateReceiverRegistered = false
+    private val timerHandler = Handler(Looper.getMainLooper())
+    private val refreshTimer = object : Runnable {
+        override fun run() {
+            binding.btnTimer.text = SleepTimerUi.summary(this@MainActivity)
+            timerHandler.postDelayed(this, 30_000L)
+        }
+    }
     private val overlayStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == MaskOverlayStateSignal.ACTION_STATE_CHANGED) {
@@ -87,6 +103,10 @@ class MainActivity : ComponentActivity() {
         setupSlider()
         setupPresetClicks()
         setupPrimaryButton()
+        binding.btnTimer.setOnClickListener {
+            SleepTimerUi.show(this) { binding.btnTimer.text = SleepTimerUi.summary(this) }
+        }
+        setupQuickTile()
     }
 
     override fun onResume() {
@@ -99,9 +119,11 @@ class MainActivity : ComponentActivity() {
         synchronizePersistedRunningState()
         registerOverlayStateReceiver()
         refreshUi()
+        timerHandler.post(refreshTimer)
     }
 
     override fun onStop() {
+        timerHandler.removeCallbacks(refreshTimer)
         unregisterOverlayStateReceiver()
         super.onStop()
     }
@@ -132,7 +154,7 @@ class MainActivity : ComponentActivity() {
 
     private fun setupSlider() {
         binding.sbTransparency.valueFrom = MaskOverlayModel.MIN_OPACITY.toFloat()
-        binding.sbTransparency.valueTo = MaskOverlayModel.MAX_OPACITY.toFloat()
+        binding.sbTransparency.valueTo = preferences.maximumOpacity.toFloat()
         binding.sbTransparency.value = preferences.lastOpacity.toFloat()
         binding.sbTransparency.addOnChangeListener { _: Slider, value: Float, fromUser: Boolean ->
             val opacity = MaskOverlayModel.coerceOpacity(value.toInt())
@@ -140,6 +162,7 @@ class MainActivity : ComponentActivity() {
                 preferences.lastOpacity = opacity
                 binding.tvOpacityValue.text = getString(R.string.opacity_value, opacity)
                 binding.tvLastUsed.text = getString(R.string.last_used_value, opacity)
+                renderPresets(opacity)
                 if (preferences.isRunning && fromUser) {
                     startMaskService(MaskServiceAction.SET_OPACITY, opacity)
                 }
@@ -188,6 +211,7 @@ class MainActivity : ComponentActivity() {
                 binding.sbTransparency.value = value.toFloat()
                 binding.tvOpacityValue.text = getString(R.string.opacity_value, value)
                 binding.tvLastUsed.text = getString(R.string.last_used_value, value)
+                renderPresets(value)
                 if (preferences.isRunning) {
                     startMaskService(MaskServiceAction.SET_OPACITY, value)
                 }
@@ -217,7 +241,19 @@ class MainActivity : ComponentActivity() {
                 }
             )
         binding.sbTransparency.value = opacity.toFloat()
+        binding.btnTimer.text = SleepTimerUi.summary(this)
+        renderPresets(opacity)
         renderHomeState(homeState)
+    }
+
+    private fun renderPresets(opacity: Int) {
+        presetViews.forEach { (view, value) ->
+            val selected = value == opacity
+            view.isSelected = selected
+            view.setBackgroundResource(if (selected) R.drawable.bg_chip_selected else R.drawable.bg_chip_default)
+            view.setTextColor(ContextCompat.getColor(this,
+                if (selected) R.color.mask_bg_start else R.color.mask_text_secondary))
+        }
     }
 
     private fun synchronizePersistedRunningState() {
@@ -246,22 +282,26 @@ class MainActivity : ComponentActivity() {
         when (state.primaryAction) {
             MaskHomeUiModel.PrimaryAction.START -> {
                 binding.btnShow.text = getString(R.string.start_overlay)
-                binding.btnShow.setBackgroundResource(R.drawable.bg_primary_button)
                 binding.btnShow.setTextColor(ContextCompat.getColor(this, R.color.mask_bg_start))
             }
 
             MaskHomeUiModel.PrimaryAction.STOP -> {
                 binding.btnShow.text = getString(R.string.stop_overlay)
-                binding.btnShow.setBackgroundResource(R.drawable.bg_running_button)
                 binding.btnShow.setTextColor(ContextCompat.getColor(this, R.color.mask_bg_start))
             }
 
             MaskHomeUiModel.PrimaryAction.GRANT_PERMISSION -> {
                 binding.btnShow.text = getString(R.string.grant_and_start)
-                binding.btnShow.setBackgroundResource(R.drawable.bg_primary_button)
                 binding.btnShow.setTextColor(ContextCompat.getColor(this, R.color.mask_bg_start))
             }
         }
+        val stopping = state.primaryAction == MaskHomeUiModel.PrimaryAction.STOP
+        binding.btnShow.backgroundTintList = ContextCompat.getColorStateList(this,
+            if (stopping) R.color.mask_control else R.color.mask_primary)
+        val foreground = ContextCompat.getColorStateList(this,
+            if (stopping) R.color.mask_text_primary else R.color.mask_bg_start)
+        binding.btnShow.setTextColor(foreground)
+        binding.btnShow.iconTint = foreground
     }
 
     private fun resolveHomeState(): MaskHomeUiModel.State {
@@ -282,6 +322,32 @@ class MainActivity : ComponentActivity() {
 
     private fun toast(resId: Int) {
         Toast.makeText(this, getString(resId), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun setupQuickTile() {
+        if (Build.VERSION.SDK_INT < 24) {
+            binding.btnAddTile.visibility = View.GONE
+            return
+        }
+        binding.btnAddTile.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= 33) {
+                getSystemService(StatusBarManager::class.java).requestAddTileService(
+                    ComponentName(this, MaskTileService::class.java),
+                    getString(R.string.app_name), Icon.createWithResource(this, R.drawable.ic_tile_veil),
+                    mainExecutor
+                ) { result ->
+                    if (result == StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_ADDED ||
+                        result == StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_ALREADY_ADDED) {
+                        toast(R.string.tile_added)
+                    }
+                }
+            } else {
+                MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_NightVeil_TimerDialog)
+                    .setTitle(R.string.tile_add)
+                    .setMessage(R.string.tile_add_instructions)
+                    .setPositiveButton(android.R.string.ok, null).show()
+            }
+        }
     }
 
     private fun startOverlayFlow() {
@@ -321,6 +387,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @android.annotation.SuppressLint("UnspecifiedRegisterReceiverFlag") // Flags overload is guarded by API 33 below.
     private fun registerOverlayStateReceiver() {
         if (overlayStateReceiverRegistered) return
 

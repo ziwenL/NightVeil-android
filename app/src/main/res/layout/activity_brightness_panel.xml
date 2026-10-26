@@ -1,50 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.core.widget.NestedScrollView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+  <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="24dp">
-
-    <TextView
-        android:layout_width="match_parent"
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="center_vertical">
+      <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_tile_veil"
+        app:tint="@color/mask_primary"
+        android:importantForAccessibility="no" />
+      <TextView
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:text="@string/notification_adjust"
         android:textColor="@color/mask_text_primary"
         android:textSize="20sp"
-        android:textStyle="bold" />
-
+        android:fontFamily="sans-serif-medium" />
+    </LinearLayout>
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/brightness_panel_hint"
-        android:textColor="@color/mask_text_secondary"
-        android:textSize="14sp" />
-
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="12dp"
+      android:text="@string/brightness_panel_hint"
+      android:textColor="@color/mask_text_secondary"
+      android:textSize="13sp"
+      android:lineSpacingExtra="3dp" />
     <TextView
-        android:id="@+id/tvIntensity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textColor="@color/mask_primary"
-        android:textSize="18sp" />
-
+      android:id="@+id/tvIntensity"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="24dp"
+      android:gravity="center"
+      android:textColor="@color/mask_text_primary"
+      android:fontFamily="sans-serif-light"
+      android:textSize="48sp"
+      android:includeFontPadding="false" />
     <com.google.android.material.slider.Slider
-        android:id="@+id/sliderIntensity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/opacity_label"
-        android:stepSize="1"
-        app:thumbColor="@color/mask_primary"
-        app:trackColorActive="@color/mask_primary" />
-
-    <Button
-        android:id="@+id/btnDone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:minHeight="48dp"
-        android:text="@string/brightness_panel_done"
-        android:textColor="@color/mask_bg_start" />
-</LinearLayout>
+      android:id="@+id/sliderIntensity"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="16dp"
+      android:contentDescription="@string/slider_description"
+      android:stepSize="1"
+      app:thumbColor="@color/mask_primary"
+      app:thumbRadius="10dp"
+      app:trackHeight="4dp"
+      app:tickVisible="false"
+      app:labelBehavior="gone"
+      app:trackColorActive="@color/mask_primary"
+      app:trackColorInactive="@color/mask_panel_border" />
+    <include
+      layout="@layout/slider_direction" />
+    <com.google.android.material.button.MaterialButton
+      android:id="@+id/btn_timer"
+      style="@style/Widget.NightVeil.SecondaryButton"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="24dp"
+      android:gravity="start|center_vertical"
+      android:text="@string/timer_off"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp"
+      app:icon="@drawable/ic_clock"
+      app:iconGravity="start" />
+    <com.google.android.material.button.MaterialButton
+      android:id="@+id/btnDone"
+      style="@style/Widget.NightVeil.PrimaryButton"
+      android:layout_width="match_parent"
+      android:layout_height="52dp"
+      android:layout_marginTop="12dp"
+      android:text="@string/brightness_panel_done" />
+  </LinearLayout>
+</androidx.core.widget.NestedScrollView>

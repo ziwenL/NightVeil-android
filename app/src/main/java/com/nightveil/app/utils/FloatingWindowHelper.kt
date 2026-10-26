@@ -100,6 +100,7 @@ class FloatingWindowHelper(context: Context) {
         }
 
         val layoutParams = createOverlayLayoutParams(type)
+        if (Build.VERSION.SDK_INT >= 31) layoutParams.alpha = 0f
         @Suppress("DEPRECATION")
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             view.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
@@ -108,6 +109,14 @@ class FloatingWindowHelper(context: Context) {
 
         childViewMap[view] = layoutParams
         windowManager?.addView(view, layoutParams)
+    }
+
+    fun updateOpacity(view: View, opacity: Int) {
+        if (Build.VERSION.SDK_INT < 31) return
+        val params = childViewMap[view] ?: return
+        // Apply opacity to the window, so Android can evaluate touch-through safety correctly.
+        params.alpha = (opacity / 100f).coerceIn(0f, 0.8f)
+        windowManager?.updateViewLayout(view, params)
     }
 
     fun destroy() {

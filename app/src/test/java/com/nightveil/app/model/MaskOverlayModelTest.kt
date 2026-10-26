@@ -6,6 +6,13 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MaskOverlayModelTest {
+    @org.junit.Test
+    fun `modern Android opacity stays within the touch-through limit`() {
+        org.junit.Assert.assertEquals(90, MaskOverlayModel.coerceOpacity(90, 30))
+        org.junit.Assert.assertEquals(80, MaskOverlayModel.coerceOpacity(90, 31))
+        org.junit.Assert.assertEquals(80, MaskOverlayModel.coerceOpacity(90, 37))
+        org.junit.Assert.assertEquals(20, MaskOverlayModel.coerceOpacity(0, 37))
+    }
 
     @Test
     fun `coerceOpacity keeps value inside allowed range`() {

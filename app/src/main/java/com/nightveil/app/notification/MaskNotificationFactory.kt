@@ -13,6 +13,9 @@ import com.nightveil.app.BrightnessPanelActivity
 import com.nightveil.app.MainActivity
 import com.nightveil.app.R
 import com.nightveil.app.model.MaskServiceAction
+import com.nightveil.app.data.MaskPreferences
+import com.nightveil.app.model.MaskTimerModel
+import android.os.SystemClock
 
 object MaskNotificationFactory {
     const val CHANNEL_ID = "mask.overlay.foreground"
@@ -29,10 +32,15 @@ object MaskNotificationFactory {
 
     fun build(context: Context, opacity: Int): Notification {
         ensureChannel(context)
+        val deadline = MaskPreferences(context).timerDeadline
+        val content = if (deadline > 0L) context.getString(
+            R.string.notification_with_timer, opacity,
+            MaskTimerModel.remainingMinutes(deadline, SystemClock.elapsedRealtime())
+        ) else context.getString(R.string.last_used_value, opacity)
         return NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.ic_tile_veil)
             .setContentTitle(context.getString(R.string.notification_title))
-            .setContentText(context.getString(R.string.opacity_value, opacity))
+            .setContentText(content)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)

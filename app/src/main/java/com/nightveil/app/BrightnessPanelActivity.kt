@@ -6,6 +6,9 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import com.nightveil.app.timer.SleepTimerUi
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.nightveil.app.data.MaskPreferences
@@ -21,6 +24,13 @@ class BrightnessPanelActivity : AppCompatActivity() {
     private lateinit var preferences: MaskPreferences
     private var receiverRegistered = false
     private var dragging = false
+    private val timerHandler = Handler(Looper.getMainLooper())
+    private val refreshTimer = object : Runnable {
+        override fun run() {
+            binding.btnTimer.text = SleepTimerUi.summary(this@BrightnessPanelActivity)
+            timerHandler.postDelayed(this, 30_000L)
+        }
+    }
     private val stateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             refreshState()
@@ -42,7 +52,7 @@ class BrightnessPanelActivity : AppCompatActivity() {
 
         binding.sliderIntensity.apply {
             valueFrom = MaskOverlayModel.MIN_OPACITY.toFloat()
-            valueTo = MaskOverlayModel.MAX_OPACITY.toFloat()
+            valueTo = preferences.maximumOpacity.toFloat()
             value = preferences.lastOpacity.toFloat()
             addOnChangeListener { _, value, fromUser ->
                 if (fromUser) {
@@ -51,7 +61,7 @@ class BrightnessPanelActivity : AppCompatActivity() {
                         return@addOnChangeListener
                     }
                     val opacity = MaskOverlayModel.coerceOpacity(value.toInt())
-                    binding.tvIntensity.text = getString(R.string.last_used_value, opacity)
+                    binding.tvIntensity.text = getString(R.string.opacity_value, opacity)
                     startService(FloatingService.createIntent(
                         this@BrightnessPanelActivity, MaskServiceAction.SET_OPACITY, opacity
                     ))
@@ -68,9 +78,13 @@ class BrightnessPanelActivity : AppCompatActivity() {
             })
         }
         binding.btnDone.setOnClickListener { finish() }
+        binding.btnTimer.setOnClickListener {
+            SleepTimerUi.show(this) { binding.btnTimer.text = SleepTimerUi.summary(this) }
+        }
         refreshState()
     }
 
+    @android.annotation.SuppressLint("UnspecifiedRegisterReceiverFlag") // Flags overload is guarded by API 33 below.
     override fun onStart() {
         super.onStart()
         if (!::binding.isInitialized) return
@@ -83,9 +97,11 @@ class BrightnessPanelActivity : AppCompatActivity() {
         }
         receiverRegistered = true
         refreshState()
+        timerHandler.post(refreshTimer)
     }
 
     override fun onStop() {
+        timerHandler.removeCallbacks(refreshTimer)
         if (receiverRegistered) {
             unregisterReceiver(stateReceiver)
             receiverRegistered = false
@@ -102,9 +118,10 @@ class BrightnessPanelActivity : AppCompatActivity() {
             finish()
             return
         }
+        binding.btnTimer.text = SleepTimerUi.summary(this)
         if (!dragging) {
             binding.sliderIntensity.value = preferences.lastOpacity.toFloat()
-            binding.tvIntensity.text = getString(R.string.last_used_value, preferences.lastOpacity)
+            binding.tvIntensity.text = getString(R.string.opacity_value, preferences.lastOpacity)
         }
     }
 

@@ -11,9 +11,23 @@ import com.nightveil.app.model.MaskOverlayAnimationModel
 class MaskOverlayController(
     private val binding: WidgetMaskViewBinding
 ) {
+    private var revealAnimator: Animator? = null
+    private var animationGeneration = 0
+
+    fun cancelAnimations() {
+        animationGeneration++
+        revealAnimator?.removeAllListeners()
+        revealAnimator?.cancel()
+        revealAnimator = null
+        binding.viewMask.animate().setListener(null).cancel()
+    }
+
     fun show(opacity: Int) {
+        cancelAnimations()
+        val generation = animationGeneration
         binding.viewMask.post {
-            val normalizedAlpha = opacity / 100f
+            if (generation != animationGeneration || !binding.viewMask.isAttachedToWindow) return@post
+            val normalizedAlpha = if (android.os.Build.VERSION.SDK_INT >= 31) 1f else opacity / 100f
             val centerX = binding.viewMask.width / 2
             val centerY = binding.viewMask.height / 2
             val finalRadius = MaskOverlayAnimationModel.finalRadius(
@@ -31,7 +45,7 @@ class MaskOverlayController(
                 ) && finalRadius > 0f
             ) {
                 binding.viewMask.alpha = normalizedAlpha
-                ViewAnimationUtils.createCircularReveal(
+                revealAnimator = ViewAnimationUtils.createCircularReveal(
                     binding.viewMask,
                     centerX,
                     centerY,
@@ -53,13 +67,16 @@ class MaskOverlayController(
     }
 
     fun updateOpacity(opacity: Int) {
-        binding.viewMask.animate().cancel()
-        binding.viewMask.alpha = opacity / 100f
+        cancelAnimations()
+        binding.viewMask.alpha = if (android.os.Build.VERSION.SDK_INT >= 31) 1f else opacity / 100f
         binding.viewMask.isVisible = true
     }
 
     fun hide(onComplete: () -> Unit) {
+        cancelAnimations()
+        val generation = animationGeneration
         binding.viewMask.post {
+            if (generation != animationGeneration || !binding.viewMask.isAttachedToWindow) return@post
             val centerX = binding.viewMask.width / 2
             val centerY = binding.viewMask.height / 2
             val finalRadius = MaskOverlayAnimationModel.finalRadius(
@@ -75,7 +92,7 @@ class MaskOverlayController(
                     height = binding.viewMask.height
                 ) && finalRadius > 0f
             ) {
-                ViewAnimationUtils.createCircularReveal(
+                revealAnimator = ViewAnimationUtils.createCircularReveal(
                     binding.viewMask,
                     centerX,
                     centerY,

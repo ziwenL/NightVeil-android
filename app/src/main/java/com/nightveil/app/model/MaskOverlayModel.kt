@@ -8,7 +8,10 @@ object MaskOverlayModel {
 
     val PRESETS = listOf(30, 50, 65, 80)
 
-    fun coerceOpacity(value: Int): Int = value.coerceIn(MIN_OPACITY, MAX_OPACITY)
+    // Android 12+ blocks touches through application overlays above 80% window opacity.
+    fun maximumOpacity(sdkInt: Int): Int = if (sdkInt >= 31) 80 else MAX_OPACITY
+
+    fun coerceOpacity(value: Int, sdkInt: Int = 0): Int = value.coerceIn(MIN_OPACITY, maximumOpacity(sdkInt))
 
     fun increaseOpacity(value: Int): Int = coerceOpacity(value + STEP)
 

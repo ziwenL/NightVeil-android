@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="mask_bg_start">#081019</color>
-    <color name="mask_bg_end">#132131</color>
-    <color name="mask_panel">#CC1B2A3A</color>
-    <color name="mask_panel_border">#3A4D66</color>
-    <color name="mask_primary">#7ED0FF</color>
-    <color name="mask_primary_dark">#2F97F7</color>
-    <color name="mask_text_primary">#F5FAFF</color>
-    <color name="mask_text_secondary">#9FB0C3</color>
-    <color name="mask_success">#79D39B</color>
-    <color name="mask_warning">#FFC46B</color>
+    <color name="mask_bg_start">#0C121C</color>
+    <color name="mask_bg_end">#101925</color>
+    <color name="mask_panel">#172230</color>
+    <color name="mask_panel_border">#2A3849</color>
+    <color name="mask_control">#202E3E</color>
+    <color name="mask_primary">#DCCBAD</color>
+    <color name="mask_primary_dark">#B9A482</color>
+    <color name="mask_text_primary">#ECEAE4</color>
+    <color name="mask_text_secondary">#A3AFBF</color>
+    <color name="mask_success">#C7D7CB</color>
+    <color name="mask_warning">#DCCBAD</color>
     <color name="mask_overlay_black">#FF000000</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
