@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/notification_adjust"
+        android:textColor="@color/mask_text_primary"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/brightness_panel_hint"
+        android:textColor="@color/mask_text_secondary"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tvIntensity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/mask_primary"
+        android:textSize="18sp" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/sliderIntensity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/opacity_label"
+        android:stepSize="1"
+        app:thumbColor="@color/mask_primary"
+        app:trackColorActive="@color/mask_primary" />
+
+    <Button
+        android:id="@+id/btnDone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:minHeight="48dp"
+        android:text="@string/brightness_panel_done"
+        android:textColor="@color/mask_bg_start" />
+</LinearLayout>

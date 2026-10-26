@@ -17,7 +17,10 @@
     <string name="preset_50">50%</string>
     <string name="preset_65">65%</string>
     <string name="preset_80">80%</string>
-    <string name="tips_text">提示：夜幕 开启后，可以直接在通知栏提高、降低或关闭。</string>
+    <string name="tips_text">提示：夜幕 开启后，点击通知栏的“亮度调节”即可拖动滑块，也可直接关闭遮罩。</string>
+    <string name="notification_adjust">亮度调节</string>
+    <string name="brightness_panel_hint">拖动调节遮罩强度，数值越大，屏幕越暗。</string>
+    <string name="brightness_panel_done">完成</string>
     <string name="toast_overlay_started">夜幕 已开启</string>
     <string name="toast_overlay_stopped">夜幕 已关闭</string>
     <string name="toast_permission_required">请先授予悬浮窗权限</string>

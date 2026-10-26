@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.nightveil.app.FloatingService
+import com.nightveil.app.BrightnessPanelActivity
 import com.nightveil.app.MainActivity
 import com.nightveil.app.R
 import com.nightveil.app.model.MaskServiceAction
@@ -16,14 +17,13 @@ import com.nightveil.app.model.MaskServiceAction
 object MaskNotificationFactory {
     const val CHANNEL_ID = "mask.overlay.foreground"
     const val NOTIFICATION_ID = 205
-    const val REQUEST_DECREASE = 201
-    const val REQUEST_INCREASE = 202
+    const val REQUEST_ADJUST = 205
+    const val ACTION_ADJUST = "com.nightveil.app.action.ADJUST"
     const val REQUEST_STOP = 203
     private const val REQUEST_OPEN_APP = 204
 
     val notificationActions = listOf(
-        MaskServiceAction.DECREASE.action,
-        MaskServiceAction.INCREASE.action,
+        ACTION_ADJUST,
         MaskServiceAction.STOP.action,
     )
 
@@ -39,13 +39,16 @@ object MaskNotificationFactory {
             .setContentIntent(openAppPendingIntent(context))
             .addAction(
                 0,
-                context.getString(R.string.notification_decrease),
-                actionPendingIntent(context, MaskServiceAction.DECREASE, REQUEST_DECREASE)
-            )
-            .addAction(
-                0,
-                context.getString(R.string.notification_increase),
-                actionPendingIntent(context, MaskServiceAction.INCREASE, REQUEST_INCREASE)
+                context.getString(R.string.notification_adjust),
+                PendingIntent.getActivity(
+                    context,
+                    REQUEST_ADJUST,
+                    Intent(context, BrightnessPanelActivity::class.java).apply {
+                        action = ACTION_ADJUST
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    },
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
             )
             .addAction(
                 0,

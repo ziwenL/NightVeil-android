@@ -11,13 +11,10 @@ class FloatingWindowHelperTest {
 
     @Test
     fun `overlay layout config includes full screen coverage flags`() {
-        val config = FloatingWindowHelper.createOverlayLayoutConfig(
-            screenHeight = 2200,
-            statusBarHeight = 96
-        )
+        val config = FloatingWindowHelper.createOverlayLayoutConfig()
 
         assertEquals(WindowManager.LayoutParams.MATCH_PARENT, config.width)
-        assertEquals(2296, config.height)
+        assertEquals(WindowManager.LayoutParams.MATCH_PARENT, config.height)
         assertEquals(Gravity.START or Gravity.TOP, config.gravity)
         assertEquals(PixelFormat.TRANSLUCENT, config.format)
         assertTrue(config.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE != 0)

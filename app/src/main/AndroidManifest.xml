@@ -38,6 +38,12 @@
             android:noHistory="true"
             android:taskAffinity=""
             android:theme="@style/Theme.NightVeil.ShortcutProxy" />
+        <activity
+            android:name=".BrightnessPanelActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:theme="@style/Theme.NightVeil.BrightnessPanel" />
         <service
             android:name=".FloatingService"
             android:exported="false"

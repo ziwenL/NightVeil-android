@@ -13,7 +13,6 @@ import android.view.View
 import android.view.WindowManager
 
 class FloatingWindowHelper(context: Context) {
-    private val appContext = context.applicationContext
     private var windowManager: WindowManager? =
         context.getSystemService(WINDOW_SERVICE) as? WindowManager
     private val childViewMap = HashMap<View, WindowManager.LayoutParams>()
@@ -50,12 +49,8 @@ class FloatingWindowHelper(context: Context) {
             }
         }
 
-        fun createOverlayLayoutParams(
-            type: Int,
-            screenHeight: Int,
-            statusBarHeight: Int
-        ): WindowManager.LayoutParams {
-            val config = createOverlayLayoutConfig(screenHeight, statusBarHeight)
+        fun createOverlayLayoutParams(type: Int): WindowManager.LayoutParams {
+            val config = createOverlayLayoutConfig()
             val layoutParams = WindowManager.LayoutParams()
             layoutParams.width = config.width
             layoutParams.height = config.height
@@ -63,19 +58,20 @@ class FloatingWindowHelper(context: Context) {
             layoutParams.flags = config.flags
             layoutParams.format = config.format
             layoutParams.gravity = config.gravity
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                // The veil must include system-bar areas rather than fit inside their insets.
+                layoutParams.setFitInsetsTypes(0)
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && config.layoutInDisplayCutoutMode != null) {
                 layoutParams.layoutInDisplayCutoutMode = config.layoutInDisplayCutoutMode
             }
             return layoutParams
         }
 
-        fun createOverlayLayoutConfig(
-            screenHeight: Int,
-            statusBarHeight: Int
-        ): OverlayLayoutConfig {
+        fun createOverlayLayoutConfig(): OverlayLayoutConfig {
             return OverlayLayoutConfig(
                 width = WindowManager.LayoutParams.MATCH_PARENT,
-                height = screenHeight + statusBarHeight,
+                height = WindowManager.LayoutParams.MATCH_PARENT,
                 flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
                     WindowManager.LayoutParams.FLAG_FULLSCREEN or
@@ -83,10 +79,12 @@ class FloatingWindowHelper(context: Context) {
                     WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 format = PixelFormat.TRANSLUCENT,
                 gravity = Gravity.START or Gravity.TOP,
-                layoutInDisplayCutoutMode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-                } else {
-                    null
+                layoutInDisplayCutoutMode = when {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
+                        WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ->
+                        WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                    else -> null
                 }
             )
         }
@@ -101,23 +99,15 @@ class FloatingWindowHelper(context: Context) {
             WindowManager.LayoutParams.TYPE_PHONE
         }
 
-        val layoutParams = createOverlayLayoutParams(
-            type = type,
-            screenHeight = appContext.resources.displayMetrics.heightPixels,
-            statusBarHeight = getStatusBarHeight()
-        )
+        val layoutParams = createOverlayLayoutParams(type)
+        @Suppress("DEPRECATION")
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            view.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        }
 
         childViewMap[view] = layoutParams
         windowManager?.addView(view, layoutParams)
-    }
-
-    private fun getStatusBarHeight(): Int {
-        val resourceId = appContext.resources.getIdentifier("status_bar_height", "dimen", "android")
-        return if (resourceId != 0) {
-            appContext.resources.getDimensionPixelSize(resourceId)
-        } else {
-            0
-        }
     }
 
     fun destroy() {

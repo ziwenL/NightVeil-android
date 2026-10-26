@@ -17,7 +17,10 @@
     <string name="preset_50">50%</string>
     <string name="preset_65">65%</string>
     <string name="preset_80">80%</string>
-    <string name="tips_text">Tip:\nonce Night Veil is running, you can raise, lower, or stop it right from the notification shade.</string>
+    <string name="tips_text">Tip:\nonce Night Veil is running, tap Adjust brightness in the notification to open the slider, or Stop to turn it off.</string>
+    <string name="notification_adjust">Adjust brightness</string>
+    <string name="brightness_panel_hint">Drag to adjust veil intensity. A higher value makes the screen darker.</string>
+    <string name="brightness_panel_done">Done</string>
     <string name="toast_overlay_started">Night Veil is on</string>
     <string name="toast_overlay_stopped">Night Veil is off</string>
     <string name="toast_permission_required">Please allow overlay permission first</string>
